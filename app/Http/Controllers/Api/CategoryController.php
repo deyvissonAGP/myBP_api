@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\BaseController as BaseController;
-use App\Models\Product;
-use App\Http\Resources\Product as ProductResource;
-use Illuminate\Contracts\Validation\Validator as ValidationValidator;
+use App\Models\Category;
+use App\Http\Resources\Category as CategoryResource;
 use Illuminate\Http\Request;
 use Validator;
-use Illuminate\Validation\Validator as IlluminateValidationValidator;
 
-class ProductController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,9 +17,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $categories = Category::all();
 
-        return response()->json(['Exibição de Produtos', ProductResource::collection($products)]);
+        return response()->json(['Exibição de categorias.', CategoryResource::collection($categories)]);
     }
 
     /**
@@ -36,19 +33,16 @@ class ProductController extends Controller
         $input = $request->all();
 
         $validator = Validator::make($input,[
-            'nome'      => 'required|string|max:255',
-            'categoria' => 'required',
-            'preco'     => 'required',
+            'nome'      => 'required|unique:categories|string|max:255',
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors());       
         }
 
-        $product = Product::create($input);
+        $category = Category::create($input);
         
-        return response()->json(['Produto criado com sucesso.', new ProductResource($product)]);
-
+        return response()->json(['categoria criada com sucesso.', new CategoryResource($category)]);
     }
 
     /**
@@ -59,12 +53,11 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        
-        $product = Product::find($id);
-        if (is_null($product)) {
-            return response()->json('Nenhum produto encontrado', 404); 
+        $category = Category::find($id);
+        if (is_null($category)) {
+            return response()->json('Nenhuma categoria encontrada', 404); 
         }
-        return response()->json([new ProductResource($product)]);
+        return response()->json([new CategoryResource($category)]);
     }
 
     /**
@@ -74,27 +67,22 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,  Product $product)
+    public function update(Request $request, Category $category)
     {
         $input = $request->all();
        
         $validator = Validator::make($input,[
             'nome'      => 'required|string|max:255',
-            'categoria' => 'required',
-            // 'preco'     => 'required',
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors());       
         }
 
-        $product->nome = $request->nome;
-        $product->categoria = $request->categoria;
-        // $product->preco = $request->preco;
-        $product->save();
+        $category->nome = $request->nome;
+        $category->save();
         
-        return response()->json(['Produto Atuzalizado com Sucesso.', new ProductResource($product)]);
-
+        return response()->json(['Categoria atualizada com Sucesso.', new CategoryResource($category)]);
     }
 
     /**
@@ -103,10 +91,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Category $category)
     {
-        $product->delete();
+        $category->delete();
    
-        return response()->json('Produto deletado com Sucesso !!');
+        return response()->json('Categoria deletada com Sucesso !!');
     }
 }
