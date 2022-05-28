@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Client as ClientResource;
 use App\Models\Client;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+
 
 
 class ClientController extends Controller

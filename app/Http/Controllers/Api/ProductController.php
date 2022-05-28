@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\Product;
 use App\Http\Resources\Product as ProductResource;
-use Illuminate\Contracts\Validation\Validator as ValidationValidator;
 use Illuminate\Http\Request;
-use Validator;
-use Illuminate\Validation\Validator as IlluminateValidationValidator;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
