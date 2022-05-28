@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Http\Resources\Category as CategoryResource;
+use App\Http\Resources\Client as ClientResource;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Validator;
 
-class CategoryController extends Controller
+
+class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +18,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $clients = Client::all();
 
-        return response()->json(['Exibição de categorias.', CategoryResource::collection($categories)]);
+        return response()->json(['Exibição de Clientes', ClientResource::collection($clients)]);
     }
 
     /**
@@ -33,16 +34,20 @@ class CategoryController extends Controller
         $input = $request->all();
 
         $validator = Validator::make($input,[
-            'nome'      => 'required|unique:categories|string|max:255',
+            'nome'      => 'required|string|max:255',
+            'email'     => 'required|email',
+            'telefone'  => 'required|max:17', 
+
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors());       
         }
 
-        $category = Category::create($input);
+        $client = Client::create($input);
         
-        return response()->json(['categoria criada com sucesso.', new CategoryResource($category)]);
+        return response()->json(['Cliente cadastrado com sucesso.', new ClientResource($client)]);
+
     }
 
     /**
@@ -53,11 +58,12 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = Category::find($id);
-        if (is_null($category)) {
-            return response()->json('Nenhuma categoria encontrada', 404); 
+        
+        $client = Client::find($id);
+        if (is_null($client)) {
+            return response()->json('Nenhum cliente encontrado', 404); 
         }
-        return response()->json([new CategoryResource($category)]);
+        return response()->json([new ClientResource($client)]);
     }
 
     /**
@@ -67,23 +73,27 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request,  Client $client)
     {
         $input = $request->all();
        
         $validator = Validator::make($input,[
             'nome'      => 'required|string|max:255',
+            'email'     => 'required|email',
+            'telefone'  => 'required|max:17', 
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors());       
         }
 
-        $category->nome = $request->nome;
-        $category->descricao = $request->descricao;
-        $category->save();
+        $client->nome = $request->nome;
+        $client->email = $request->email;
+        $client->telefone = $request->telefone;
+        $client->save();
         
-        return response()->json(['Categoria Atualizada com Sucesso.', new CategoryResource($category)]);
+        return response()->json(['Cliente Atualizado com Sucesso.', new ClientResource($client)]);
+
     }
 
     /**
@@ -92,10 +102,10 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(Client $client)
     {
-        $category->delete();
+        $client->delete();
    
-        return response()->json('Categoria deletada com Sucesso !!');
+        return response()->json('Cliente deletado com Sucesso !!');
     }
 }

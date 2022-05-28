@@ -37,8 +37,9 @@ class ProductController extends Controller
 
         $validator = Validator::make($input,[
             'nome'      => 'required|string|max:255',
-            'categoria' => 'required',
             'preco'     => 'required',
+            'categoria_id' => 'required',
+
         ]);
 
         if($validator->fails()){
@@ -80,7 +81,7 @@ class ProductController extends Controller
        
         $validator = Validator::make($input,[
             'nome'      => 'required|string|max:255',
-            'categoria' => 'required',
+            'categoria_id' => 'required',
             // 'preco'     => 'required',
         ]);
 
@@ -89,11 +90,11 @@ class ProductController extends Controller
         }
 
         $product->nome = $request->nome;
-        $product->categoria = $request->categoria;
+        $product->categoria_id = $request->categoria_id;
         // $product->preco = $request->preco;
         $product->save();
         
-        return response()->json(['Produto Atuzalizado com Sucesso.', new ProductResource($product)]);
+        return response()->json(['Produto Atualizado com Sucesso.', new ProductResource($product)]);
 
     }
 
